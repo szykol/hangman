@@ -11,7 +11,7 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1200, 800), "skeleton v.0.0.7"/*,sf::Style::Fullscreen*/);
+	sf::RenderWindow window(sf::VideoMode(1200, 800), "hangman"/*,sf::Style::Fullscreen*/);
 	window.setFramerateLimit(0U);
 
 	Application::init(&window);

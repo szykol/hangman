@@ -16,10 +16,13 @@ class Game : public sen::State
 	std::unordered_map<char, sen::Button> m_buttons;
 	std::unique_ptr<sen::Button> m_reloadButton;
 	bool m_shouldPopReloadButton = false;
+	unsigned int m_lives = 11;
+	bool m_game = true;
 public:
 	virtual void update(float deltaTime, sf::RenderWindow& window) override;
 	virtual void render(sf::RenderTarget& target) override;
-	virtual void input(sf::RenderWindow& window) override;
+	//virtual void input(sf::RenderWindow& window) override;
+	virtual void handleEvents(sf::Event& evnt) override;
 	Game();
 	~Game();
 	void getWords();

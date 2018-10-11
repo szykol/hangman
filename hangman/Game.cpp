@@ -7,6 +7,48 @@
 
 #include <fstream>
 
+void Game::handleEvents(sf::Event & evnt)
+{
+	if (!m_game) return;
+	
+	char z = toupper((char)evnt.text.unicode);
+
+	if (std::find(m_letters.begin(), m_letters.end(), z) != m_letters.end()) return;
+
+	if (evnt.type == sf::Event::TextEntered)
+	{
+		//std::cout << (char)evnt.text.unicode << std::endl;
+		if (m_guessWord.checkInput(z))
+		{
+			m_welcome->setString("Correct!");
+			m_welcome->setFillColor(sf::Color::Green);
+			
+			auto button = m_buttons.find(z);
+			if (button != m_buttons.end())
+			{
+				button->second.setOutlineColor(sf::Color::Green);
+				button->second.setActive(false);
+				m_letters.push_back(z);
+			}
+			//b.setOutlineColor(sf::Color::Green);
+		}
+		else
+		{
+			m_welcome->setString("Wrong!");
+			m_welcome->setFillColor(sf::Color::Red);
+			auto button = m_buttons.find(z);
+			if(button != m_buttons.end())
+			{
+				button->second.setOutlineColor(sf::Color::Red);
+				button->second.getTextObject().setFillColor(sf::Color::Red);
+				button->second.setActive(false);
+				m_letters.push_back(z);
+			}
+			m_lives--;
+		}
+	}
+}
+
 Game::Game()
 {
 	m_welcome = std::make_unique<sen::Text>("Welcome");
@@ -48,6 +90,7 @@ Game::Game()
 				b.setOutlineColor(sf::Color::Red);
 				b.getTextObject().setFillColor(sf::Color::Red);
 				b.setActive(false);
+				m_lives--;
 			}
 			m_letters.push_back(z);
 		});
@@ -58,12 +101,12 @@ Game::Game()
 
 void Game::update(float deltaTime, sf::RenderWindow & window)
 {
-	for (auto& b : m_buttons)
-		b.second.update(deltaTime);
+	if (m_reloadButton)
+		m_reloadButton->update(deltaTime);
 
-	if (m_guessWord.correct())
+	if (!m_game) 
 	{
-		m_welcome->setFillColor(sf::Color::Green);
+		//m_welcome->setFillColor(sf::Color::Green);
 		if (!m_reloadButton)
 		{
 			m_reloadButton = std::make_unique<sen::Button>("Reload");
@@ -71,17 +114,26 @@ void Game::update(float deltaTime, sf::RenderWindow & window)
 			m_reloadButton->setOnClickCallback([this]{
 				resetGame();
 			});
-			m_welcome->setString("You've won");
+			//m_welcome->setString("You've won");
 		}
+		return;
 	}
 
-	if (m_reloadButton)
-		m_reloadButton->update(deltaTime);
+	for (auto& b : m_buttons)
+		b.second.update(deltaTime);
+
+	
 
 	if (m_shouldPopReloadButton)
 	{
 		m_reloadButton = nullptr;
 		m_shouldPopReloadButton = false;
+	}
+
+	if (m_lives == 0)
+	{
+		m_welcome->setString("You've lost");
+		m_game = false;
 	}
 }
 
@@ -96,11 +148,6 @@ void Game::render(sf::RenderTarget & target)
 
 	if (m_reloadButton)
 		m_reloadButton->render(target);
-}
-
-void Game::input(sf::RenderWindow & window)
-{
-	
 }
 
 Game::~Game()
@@ -131,11 +178,14 @@ void Game::loadRandomWord()
 void Game::resetGame()
 {
 	loadRandomWord();
+	m_letters.clear();
 	m_shouldPopReloadButton = true;
 	m_welcome->setString("");
 	for (auto&x : m_buttons)
 	{
 		x.second.setActive(true);
 	}
+	m_game = true;
+	m_lives = 11;
 }
 
