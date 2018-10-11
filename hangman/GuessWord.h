@@ -6,10 +6,14 @@
 
 class GuessWord
 {
-	std::vector<sen::Text> m_letters;
-	std::string m_word = "SLOWO";
+	//std::vector<sen::Text> m_letters;
+	std::unique_ptr<sen::Text> m_displayWord;
+	std::string m_word;
 public:
 	GuessWord();
 	void render(sf::RenderTarget& target);
-	void checkInput(char input);
+	bool checkInput(char input);
+	bool correct() const;
+	void reset(const std::string& newWord);
+
 };

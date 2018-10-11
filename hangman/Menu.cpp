@@ -8,7 +8,7 @@ Menu::Menu()
 	m_into = std::make_unique<sen::Button>("GAME");
 	m_into->setPosition((sf::Vector2f)Application::getInitialWindowSize() / 2.f);
 
-	m_into->setOnClickCalback([] {
+	m_into->setOnClickCallback([] {
 		sen::StateManager::pushState<Game>();
 	});
 
