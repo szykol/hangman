@@ -37,13 +37,14 @@ bool GuessWord::checkInput(char input)
 bool GuessWord::correct() const
 {
 	if (!m_displayWord) return false;
-	else return m_displayWord->getString() == m_word;
+	else return !m_revealed && m_displayWord->getString() == m_word;
 }
 
 void GuessWord::reset(const std::string & newWord)
 {
 	m_word = newWord;
-	
+	m_revealed = false;
+
 	std::string temp = "";
 	for (char z : m_word)
 	{
@@ -56,7 +57,13 @@ void GuessWord::reset(const std::string & newWord)
 		m_displayWord->setString(temp);
 
 	m_displayWord->setCharacterSize(66U);
-	m_displayWord->setLetterSpacing(1.5f);
+	m_displayWord->setLetterSpacing(2.5f);
 	m_displayWord->setPosition(sf::Vector2f(200.f, 300.f));
 
+}
+
+void GuessWord::reveal()
+{
+	m_revealed = true;
+	m_displayWord->setString(m_word);
 }

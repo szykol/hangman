@@ -21,5 +21,5 @@ int main()
 	sen::StateManager::pushState<Menu>();
 	Application::run();
 
-    return 0;
+    return 0;	
 }
