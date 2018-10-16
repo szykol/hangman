@@ -58,8 +58,8 @@ void GuessWord::reset(const std::string & newWord)
 
 	m_displayWord->setCharacterSize(66U);
 	m_displayWord->setLetterSpacing(2.5f);
-	m_displayWord->setPosition(sf::Vector2f(200.f, 300.f));
-
+	m_displayWord->setPosition(Application::getInitialWindowSize().x / 2.f,
+							Application::getInitialWindowSize().y / 2.f - 20.f);
 }
 
 void GuessWord::reveal()

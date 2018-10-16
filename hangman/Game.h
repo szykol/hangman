@@ -4,6 +4,7 @@
 
 #include "GUI/Text.h"
 #include "GuessWord.h"
+#include "Util/Animation.h"
 
 class Game : public sen::State
 {
@@ -16,9 +17,12 @@ class Game : public sen::State
 	std::unordered_map<char, sen::Button> m_buttons;
 	std::unique_ptr<sen::Button> m_reloadButton;
 	bool m_shouldPopReloadButton = false;
-	unsigned int m_lives = 11;
+	unsigned int m_lives = 6;
 	std::unique_ptr<sen::Text> m_livesText;
 	bool m_game = true;
+	std::shared_ptr<sf::Texture> m_texture;
+	sf::Sprite m_sprite;
+	std::unique_ptr<sen::Animation> m_animation;
 public:
 	virtual void update(float deltaTime, sf::RenderWindow& window) override;
 	virtual void render(sf::RenderTarget& target) override;

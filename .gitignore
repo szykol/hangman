@@ -18,6 +18,7 @@
 Dependencies/
 hangman/res/Sounds/*.wav
 hangman/fwk/
+hangman/res/Images/hangman.png
 build/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

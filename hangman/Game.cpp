@@ -26,7 +26,7 @@ Game::Game()
 	m_resultText->move(sf::Vector2f(0.f, 40.f));
 	m_resultText->setCharacterSize(40U);
 
-	m_background = sen::CacheSystem::get<sf::Texture>("res/Images/chair.jpeg");
+	m_background = sen::CacheSystem::get<sf::Texture>("res/Images/bg.jpeg");
 	Application::setBackgroundImage(*m_background);
 	
 	getWords();
@@ -52,14 +52,19 @@ Game::Game()
 
 	float pos = Application::getInitialWindowSize().y - 300.f;
 	placeButtons('a', 'g', pos);
-	placeButtons('h', 's', pos+70);
-	placeButtons('t', 'z', pos+140);
+	placeButtons('h', 'r', pos+70);
+	placeButtons('s', 'z', pos+140);
 	//placeButtons('p', 'z');
 
 	m_livesText = std::make_unique<sen::Text>("Lives:\n  " + std::to_string(m_lives));
 	m_livesText->setPosition(sf::Vector2f(Application::getInitialWindowSize().x - 100.f, 100.f));
 	m_livesText->setCharacterSize(40U);
 
+	m_texture = sen::CacheSystem::get<sf::Texture>("res/Images/hangman.png");
+	m_animation = std::make_unique<sen::Animation>(*m_texture, sf::Vector2u(7, 1), 0.5);
+	m_sprite.setTexture(*m_texture);
+	m_sprite.setTextureRect(m_animation->getTextureRect());
+	m_sprite.setPosition(Application::getInitialWindowSize().x - 250.f, 50.f);
 	spawnReloadButton();
 }
 
@@ -81,8 +86,11 @@ void Game::render(sf::RenderTarget & target)
 {
 	if(!m_game)
 		m_resultText->render(target);
+
+	target.draw(m_sprite);
+
 	m_guessWord.render(target);
-	m_livesText->render(target);
+	//m_livesText->render(target);
 
 	for (auto& b : m_buttons)
 		b.second.render(target);
@@ -138,7 +146,7 @@ void Game::getWords()
 	std::string temp;
 	while (std::getline(f, temp))
 	{
-		if (temp.find('#') == std::string::npos)
+		if (temp.find('#') == std::string::npos && temp.length() >= 6)
 			m_words.push_back(temp);
 	}
 
@@ -161,8 +169,10 @@ void Game::resetGame()
 		x.second.setActive(true);
 	}
 	m_game = true;
-	m_lives = 11;
+	m_lives = 6;
 	m_livesText->setString("Lives:\n  "+std::to_string(m_lives));
+	m_animation->reset();
+	m_sprite.setTextureRect(m_animation->getTextureRect());
 }
 
 void Game::checkLetter(char z)
@@ -188,6 +198,8 @@ void Game::checkLetter(char z)
 			m_letters.push_back(z);
 		}
 		m_lives--;
+		m_animation->nextFrame();
+		m_sprite.setTextureRect(m_animation->getTextureRect());
 		m_livesText->setString("Lives:\n  " + std::to_string(m_lives));
 	}
 }
@@ -217,9 +229,9 @@ void Game::placeButtons(char begin, char end, float yCoord)
 	float gap = 30.f;
 	
 	if ((end-begin) % 2 != 0)
-		offset = temp * (buttonSize + gap);
+		offset = (temp+1 - 0.5f) * (buttonSize + gap);
 	else
-		offset = (temp - 0.5f) * (buttonSize + gap);
+		offset = temp * (buttonSize + gap);
 
 
 	startingPos.x -= offset;
