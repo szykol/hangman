@@ -9,14 +9,14 @@
 
 void Game::handleEvents(sf::Event & evnt)
 {
-	if (!m_game) return;
+	if (!m_game || evnt.type != sf::Event::TextEntered) return;
 	
 	char z = toupper((char)evnt.text.unicode);
 
-	if (std::find(m_letters.begin(), m_letters.end(), z) != m_letters.end()) return;
-
-	if (evnt.type == sf::Event::TextEntered)
+	if (z >= 'A' && z <= 'Z' && std::find(m_letters.begin(), m_letters.end(), z) == m_letters.end())
+	{
 		checkLetter(z);
+	}
 }
 
 Game::Game()
@@ -61,10 +61,11 @@ Game::Game()
 	m_livesText->setCharacterSize(40U);
 
 	m_texture = sen::CacheSystem::get<sf::Texture>("res/Images/hangman.png");
-	m_animation = std::make_unique<sen::Animation>(*m_texture, sf::Vector2u(7, 1), 0.5);
+	m_animation = std::make_unique<sen::Animation>(*m_texture, sf::Vector2u(12, 1), 0.5);
 	m_sprite.setTexture(*m_texture);
 	m_sprite.setTextureRect(m_animation->getTextureRect());
-	m_sprite.setPosition(Application::getInitialWindowSize().x - 250.f, 50.f);
+	m_sprite.setPosition(Application::getInitialWindowSize().x - 350.f, 50.f);
+	m_sprite.scale(sf::Vector2f(3.5, 3.5));
 	spawnReloadButton();
 }
 
@@ -169,7 +170,7 @@ void Game::resetGame()
 		x.second.setActive(true);
 	}
 	m_game = true;
-	m_lives = 6;
+	m_lives = 11;
 	m_livesText->setString("Lives:\n  "+std::to_string(m_lives));
 	m_animation->reset();
 	m_sprite.setTextureRect(m_animation->getTextureRect());

@@ -8,21 +8,23 @@
 
 class Game : public sen::State
 {
-	std::unique_ptr<sen::Text> m_resultText;
-	std::shared_ptr<sf::Texture> m_background;
 	GuessWord m_guessWord;
-	//std::vector<sen::Button> m_buttons;
+	
+	std::shared_ptr<sf::Texture> m_background;
+	std::shared_ptr<sf::Texture> m_texture;
+	std::unique_ptr<sen::Text> m_resultText;
+	std::unique_ptr<sen::Text> m_livesText;
+	std::unique_ptr<sen::Button> m_reloadButton;
+	std::unique_ptr<sen::Animation> m_animation;
 	std::vector<std::string> m_words;
 	std::vector<char> m_letters;
 	std::unordered_map<char, sen::Button> m_buttons;
-	std::unique_ptr<sen::Button> m_reloadButton;
+	
 	bool m_shouldPopReloadButton = false;
-	unsigned int m_lives = 6;
-	std::unique_ptr<sen::Text> m_livesText;
 	bool m_game = true;
-	std::shared_ptr<sf::Texture> m_texture;
+	unsigned int m_lives = 11;
+
 	sf::Sprite m_sprite;
-	std::unique_ptr<sen::Animation> m_animation;
 public:
 	virtual void update(float deltaTime, sf::RenderWindow& window) override;
 	virtual void render(sf::RenderTarget& target) override;
