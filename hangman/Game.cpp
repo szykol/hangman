@@ -21,8 +21,9 @@ void Game::handleEvents(sf::Event & evnt)
 
 Game::Game()
 {
+	sf::Vector2f center = (sf::Vector2f)Application::getInitialWindowSize() / 2.f;
 	m_resultText = std::make_unique<sen::Text>("");
-	m_resultText->setPosition((sf::Vector2f)Application::getInitialWindowSize() / 2.f);
+	m_resultText->setPosition(center);
 	m_resultText->move(sf::Vector2f(0.f, 40.f));
 	m_resultText->setCharacterSize(40U);
 
@@ -64,8 +65,13 @@ Game::Game()
 	m_animation = std::make_unique<sen::Animation>(*m_texture, sf::Vector2u(12, 1), 0.5);
 	m_sprite.setTexture(*m_texture);
 	m_sprite.setTextureRect(m_animation->getTextureRect());
-	m_sprite.setPosition(Application::getInitialWindowSize().x - 350.f, 50.f);
-	m_sprite.scale(sf::Vector2f(3.5, 3.5));
+	//m_sprite.setPosition(Application::getInitialWindowSize().x - 350.f, 50.f);
+	m_sprite.scale(sf::Vector2f(2.f, 2.f));
+
+	auto bounds = m_sprite.getLocalBounds();
+	m_sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+	m_sprite.setPosition(Application::getInitialWindowSize().x / 2.f, Application::getInitialWindowSize().y - 200.f);
+	
 	spawnReloadButton();
 }
 
@@ -174,6 +180,10 @@ void Game::resetGame()
 	m_livesText->setString("Lives:\n  "+std::to_string(m_lives));
 	m_animation->reset();
 	m_sprite.setTextureRect(m_animation->getTextureRect());
+	auto bounds = m_sprite.getLocalBounds();
+	m_sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+	m_sprite.setPosition(Application::getInitialWindowSize().x / 2.f, Application::getInitialWindowSize().y - 200.f);
+
 }
 
 void Game::checkLetter(char z)
@@ -201,6 +211,11 @@ void Game::checkLetter(char z)
 		m_lives--;
 		m_animation->nextFrame();
 		m_sprite.setTextureRect(m_animation->getTextureRect());
+
+		auto bounds = m_sprite.getLocalBounds();
+		m_sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+		m_sprite.setPosition(Application::getInitialWindowSize().x / 2.f, Application::getInitialWindowSize().y / 2.f - 200.f);
+		
 		m_livesText->setString("Lives:\n  " + std::to_string(m_lives));
 	}
 }
