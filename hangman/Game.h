@@ -19,7 +19,8 @@ class Game : public sen::State
 	std::vector<std::string> m_words;
 	std::vector<char> m_letters;
 	std::unordered_map<char, sen::Button> m_buttons;
-	
+	std::pair<int,int> m_bounds;
+
 	bool m_shouldPopReloadButton = false;
 	bool m_game = true;
 	unsigned int m_lives = 11;
@@ -28,11 +29,9 @@ class Game : public sen::State
 public:
 	virtual void update(float deltaTime, sf::RenderWindow& window) override;
 	virtual void render(sf::RenderTarget& target) override;
-	//virtual void input(sf::RenderWindow& window) override;
 	virtual void handleEvents(sf::Event& evnt) override;
 	
-	Game();
-	~Game();
+	Game(int level);
 	
 	void checkResult();
 	void spawnReloadButton();
@@ -41,6 +40,5 @@ public:
 	void resetGame();
 	void checkLetter(char letter);
 	void placeButtons(char begin, char end, float yCoord);
-	/*Game(Game&&) = default;
-	Game& operator=(Game&&) = default;*/
+	bool withinBounds(int len);
 };

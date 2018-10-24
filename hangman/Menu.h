@@ -2,11 +2,15 @@
 
 #include "States/State.h"
 #include "GUI/Button.h"
+#include "Managers/ButtonController.h"
+
+enum Level {EASY = 0, MEDIUM = 1, HARD = 2};
 
 class Menu : public sen::State
 {
-	//std::unique_ptr<sen::Text> m_welcome;
-	std::unique_ptr<sen::Button> m_into;
+	sen::Text m_text;
+	sen::Text m_difficulty;
+	sen::ButtonController m_bc;
 public:
 	Menu();
 	virtual void update(float deltaTime, sf::RenderWindow& window) override;

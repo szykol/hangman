@@ -4,7 +4,7 @@
 
 GuessWord::GuessWord()
 {
-	
+
 }
 
 void GuessWord::render(sf::RenderTarget & target)
@@ -52,7 +52,10 @@ void GuessWord::reset(const std::string & newWord)
 	}
 
 	if (!m_displayWord)
+	{
 		m_displayWord = std::make_unique<sen::Text>(temp);
+		m_displayWord->setUpdateOnlyXAxis(true);
+	}
 	else
 		m_displayWord->setString(temp);
 

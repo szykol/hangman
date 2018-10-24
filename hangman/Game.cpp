@@ -4,6 +4,7 @@
 #include "Managers/CacheSystem.h"
 #include "GuessWord.h"
 #include "Util/Random.h"
+#include "Menu.h"
 
 #include <fstream>
 
@@ -19,8 +20,15 @@ void Game::handleEvents(sf::Event & evnt)
 	}
 }
 
-Game::Game()
+Game::Game(int level)
 {
+	if (level == Level::EASY)
+		m_bounds = std::make_pair(3, 5);
+	else if (level == Level::MEDIUM)
+		m_bounds = std::make_pair(6, 10);
+	else if (level == Level::HARD)
+		m_bounds = std::make_pair(11, 14);
+
 	sf::Vector2f center = (sf::Vector2f)Application::getInitialWindowSize() / 2.f;
 	m_resultText = std::make_unique<sen::Text>("");
 	m_resultText->setPosition(center);
@@ -106,11 +114,6 @@ void Game::render(sf::RenderTarget & target)
 		m_reloadButton->render(target);
 }
 
-Game::~Game()
-{
-	Application::disableBackgroundImage();
-}
-
 void Game::checkResult()
 {
 	if (m_lives == 0)
@@ -153,15 +156,14 @@ void Game::getWords()
 	std::string temp;
 	while (std::getline(f, temp))
 	{
-		if (temp.find('#') == std::string::npos && temp.length() >= 6)
+		if (temp.find('#') == std::string::npos && withinBounds(temp.length()))
 			m_words.push_back(temp);
 	}
-
 }
 
 void Game::loadRandomWord()
 {
-	auto index = sen::Random::get<int>(0, m_words.size() + 1);
+	auto index = sen::Random::get<int>(0, m_words.size());
 
 	m_guessWord.reset(m_words[index]);
 }
@@ -262,5 +264,10 @@ void Game::placeButtons(char begin, char end, float yCoord)
 		startingPos.x += buttonSize + gap;
 	}
 
+}
+
+bool Game::withinBounds(int len)
+{
+	return (len >= m_bounds.first && len <= m_bounds.second);
 }
 

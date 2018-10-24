@@ -15,9 +15,10 @@ int main()
 	window.setFramerateLimit(0U);
 
 	Application::init(&window);
-	//auto temp = std::make_unique<Menu>();
+
+	auto bg = sen::CacheSystem::get<sf::Texture>("res/Images/bg.jpeg");
+	Application::setBackgroundImage(*bg);
 	
-	//sen::StateManager::pushState(std::move(temp));
 	sen::StateManager::pushState<Menu>();
 	Application::run();
 
