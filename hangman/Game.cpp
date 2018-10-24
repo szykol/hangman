@@ -35,9 +35,6 @@ Game::Game(int level)
 	m_resultText->move(sf::Vector2f(0.f, 40.f));
 	m_resultText->setCharacterSize(40U);
 
-	m_background = sen::CacheSystem::get<sf::Texture>("res/Images/bg.jpeg");
-	Application::setBackgroundImage(*m_background);
-	
 	getWords();
 	loadRandomWord();
 
@@ -45,11 +42,7 @@ Game::Game(int level)
 	for (char z = 'A'; z <= 'Z'; ++z)
 	{
 		auto button = sen::Button{ z };
-
-		//button.setPosition(pos);
 		button.setSize(sf::Vector2f(45.f, 45.f));
-		//pos.x += 70.f;
-
 
 		button.addListener(sen::ButtonEvent::CLICK, [this](sen::Button& b) {
 			char z = b.getTextObject().getString().toAnsiString()[0];
@@ -63,7 +56,6 @@ Game::Game(int level)
 	placeButtons('a', 'g', pos);
 	placeButtons('h', 'r', pos+70);
 	placeButtons('s', 'z', pos+140);
-	//placeButtons('p', 'z');
 
 	m_livesText = std::make_unique<sen::Text>("Lives:\n  " + std::to_string(m_lives));
 	m_livesText->setPosition(sf::Vector2f(Application::getInitialWindowSize().x - 100.f, 100.f));
@@ -73,7 +65,6 @@ Game::Game(int level)
 	m_animation = std::make_unique<sen::Animation>(*m_texture, sf::Vector2u(12, 1), 0.5);
 	m_sprite.setTexture(*m_texture);
 	m_sprite.setTextureRect(m_animation->getTextureRect());
-	//m_sprite.setPosition(Application::getInitialWindowSize().x - 350.f, 50.f);
 	m_sprite.scale(sf::Vector2f(2.f, 2.f));
 
 	auto bounds = m_sprite.getLocalBounds();
@@ -105,7 +96,6 @@ void Game::render(sf::RenderTarget & target)
 	target.draw(m_sprite);
 
 	m_guessWord.render(target);
-	//m_livesText->render(target);
 
 	for (auto& b : m_buttons)
 		b.second.render(target);

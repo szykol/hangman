@@ -10,7 +10,6 @@ class Game : public sen::State
 {
 	GuessWord m_guessWord;
 	
-	std::shared_ptr<sf::Texture> m_background;
 	std::shared_ptr<sf::Texture> m_texture;
 	std::unique_ptr<sen::Text> m_resultText;
 	std::unique_ptr<sen::Text> m_livesText;
