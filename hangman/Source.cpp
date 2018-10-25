@@ -7,7 +7,7 @@
 
 #include <memory>
 
-#include "Menu.h"
+#include "Languages.h"
 
 int main()
 {
@@ -19,7 +19,7 @@ int main()
 	auto bg = sen::CacheSystem::get<sf::Texture>("res/Images/bg.jpeg");
 	Application::setBackgroundImage(*bg);
 	
-	sen::StateManager::pushState<Menu>();
+	sen::StateManager::pushState<Languages>();
 	Application::run();
 
     return 0;	

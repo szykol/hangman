@@ -22,9 +22,9 @@ bool GuessWord::checkInput(char input)
 	bool result = false;
 	for (int i = 0; i < m_word.size(); ++i)
 	{
-		if (m_word[i] == input)
+		if (tolower(m_word[i]) == input)
 		{
-			word[i] = input;
+			word[i] = m_word[i];
 			//m_guessed[i] = input;
 			result = true;
 		}
@@ -62,7 +62,7 @@ void GuessWord::reset(const std::string & newWord)
 	m_displayWord->setCharacterSize(66U);
 	m_displayWord->setLetterSpacing(2.5f);
 	m_displayWord->setPosition(Application::getInitialWindowSize().x / 2.f,
-							Application::getInitialWindowSize().y / 2.f - 20.f);
+							Application::getInitialWindowSize().y / 2.f - 30.f);
 }
 
 void GuessWord::reveal()

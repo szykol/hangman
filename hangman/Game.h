@@ -24,13 +24,15 @@ class Game : public sen::State
 	bool m_game = true;
 	unsigned int m_lives = 11;
 
+	int m_language;
+
 	sf::Sprite m_sprite;
 public:
 	virtual void update(float deltaTime, sf::RenderWindow& window) override;
 	virtual void render(sf::RenderTarget& target) override;
 	virtual void handleEvents(sf::Event& evnt) override;
 	
-	Game(int level);
+	Game(int level, int language);
 	
 	void checkResult();
 	void spawnReloadButton();

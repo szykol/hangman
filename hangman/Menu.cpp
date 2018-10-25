@@ -3,14 +3,12 @@
 #include "Managers/StateManager.h"
 #include "Game.h"
 #include "Managers/CacheSystem.h"
+#include "Languages.h"
 
-Menu::Menu()
+Menu::Menu(int language)
 	: m_text("HANGMAN"), m_difficulty("Choose Your Difficulty")
 {
 	auto center = (sf::Vector2f)Application::getInitialWindowSize() / 2.f;
-
-	auto background = sen::CacheSystem::get<sf::Texture>("res/Images/bg.jpeg");
-	Application::setBackgroundImage(*background);
 
 	m_text.setPosition(center.x, center.y - 250.f);
 	m_text.setCharacterSize(50U);
@@ -18,13 +16,23 @@ Menu::Menu()
 	m_difficulty.setPosition(center.x, center.y - 150.f);
 	m_difficulty.setCharacterSize(30U);
 
-	const char* names[3] = { "Easy", "Medium", "Hard" };
+	std::vector<const char*> levels;
+
+	if (language == Language::ENGLISH) 
+		levels = std::vector<const char*>{ "Easy", "Medium", "Hard" };
+	else
+	{
+		levels = std::vector<const char*>{ "Latwy", "Sredni", "Trudny" };
+		m_difficulty.setString("Wybierz poziom trudnosci");
+	}
+
+
 	for (int i = Level::EASY; i <= Level::HARD; ++i)
 	{
-		auto temp = std::make_shared<sen::Button>(names[i]);
+		auto temp = std::make_shared<sen::Button>(levels[i]);
 
-		temp->setOnClickCallback([i] {
-			sen::StateManager::pushState<Game>(i);
+		temp->setOnClickCallback([i, language] {
+			sen::StateManager::pushState<Game>(i, language);
 		});
 
 		m_bc.pushButtons(temp);

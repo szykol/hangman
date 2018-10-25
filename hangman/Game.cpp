@@ -5,6 +5,7 @@
 #include "GuessWord.h"
 #include "Util/Random.h"
 #include "Menu.h"
+#include "Languages.h"
 
 #include <fstream>
 
@@ -20,19 +21,20 @@ void Game::handleEvents(sf::Event & evnt)
 	}
 }
 
-Game::Game(int level)
+Game::Game(int level, int language)
+	: m_language(language)
 {
 	if (level == Level::EASY)
 		m_bounds = std::make_pair(3, 5);
 	else if (level == Level::MEDIUM)
 		m_bounds = std::make_pair(6, 10);
 	else if (level == Level::HARD)
-		m_bounds = std::make_pair(11, 14);
+		m_bounds = std::make_pair(11, 17);
 
 	sf::Vector2f center = (sf::Vector2f)Application::getInitialWindowSize() / 2.f;
 	m_resultText = std::make_unique<sen::Text>("");
 	m_resultText->setPosition(center);
-	m_resultText->move(sf::Vector2f(0.f, 40.f));
+	m_resultText->move(sf::Vector2f(0.f, 50.f));
 	m_resultText->setCharacterSize(40U);
 
 	getWords();
@@ -69,7 +71,7 @@ Game::Game(int level)
 
 	auto bounds = m_sprite.getLocalBounds();
 	m_sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
-	m_sprite.setPosition(Application::getInitialWindowSize().x / 2.f, Application::getInitialWindowSize().y - 200.f);
+	m_sprite.setPosition(Application::getInitialWindowSize().x / 2.f, Application::getInitialWindowSize().y - 230.f);
 	
 	spawnReloadButton();
 }
@@ -108,7 +110,11 @@ void Game::checkResult()
 {
 	if (m_lives == 0)
 	{
-		m_resultText->setString("You've lost");
+		if(m_language == Language::ENGLISH)
+			m_resultText->setString("You've lost");
+		else
+			m_resultText->setString("Przegrales");
+
 		m_resultText->setFillColor(sf::Color::Red);
 		m_guessWord.reveal();
 		m_game = false;
@@ -116,7 +122,11 @@ void Game::checkResult()
 
 	if (m_guessWord.correct())
 	{
-		m_resultText->setString("You've won");
+		if (m_language == Language::ENGLISH)
+			m_resultText->setString("You've won");
+		else
+			m_resultText->setString("Wygrales");
+
 		m_resultText->setFillColor(sf::Color::Green);
 		m_game = false;
 	}
@@ -126,7 +136,11 @@ void Game::spawnReloadButton()
 {
 	if (!m_reloadButton)
 	{
-		m_reloadButton = std::make_unique<sen::Button>("Reload");
+		if(m_language == Language::ENGLISH)
+			m_reloadButton = std::make_unique<sen::Button>("Reload");
+		else
+			m_reloadButton = std::make_unique<sen::Button>("Od Nowa");
+
 		sf::Vector2f tempPos(Application::getInitialWindowSize().x / 2.f,
 			Application::getInitialWindowSize().y);
 
@@ -141,19 +155,25 @@ void Game::spawnReloadButton()
 
 void Game::getWords()
 {
-	std::ifstream f("words.txt");
+	std::string path;
+	if (m_language == Language::ENGLISH)
+		path = "words.txt";
+	else
+		path = "slowa.txt";
+
+	std::ifstream f(path);
 
 	std::string temp;
 	while (std::getline(f, temp))
 	{
-		if (temp.find('#') == std::string::npos && withinBounds(temp.length()))
+		if (temp.find('#') == std::string::npos & withinBounds(temp.length()))
 			m_words.push_back(temp);
 	}
 }
 
 void Game::loadRandomWord()
 {
-	auto index = sen::Random::get<int>(0, m_words.size());
+	auto index = sen::Random::get<int>(0, m_words.size()-1);
 
 	m_guessWord.reset(m_words[index]);
 }
